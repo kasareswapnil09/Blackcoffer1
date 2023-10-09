@@ -1,0 +1,44 @@
+/* Custom styles for the entire page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Style the header */
+h1 {
+    color: #333;
+}
+
+/* Style the canvas element for the chart */
+#myChart {
+    margin-top: 20px;
+    max-width: 800px;
+}
+
+/* Style the data table */
+#data-table {
+    margin-top: 20px;
+}
+
+/* Style the table headers */
+#dashboard-table th {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Style the table rows */
+#dashboard-table tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+/* Style the table rows on hover */
+#dashboard-table tbody tr:hover {
+    background-color: #ddd;
+}
+
+/* Style the "No data available" message */
+#dashboard-table tbody tr.empty td {
+    text-align: center;
+}
+
+

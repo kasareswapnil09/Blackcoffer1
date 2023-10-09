@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Visualization Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Add styles for table rows */
+        table#dashboard-table tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        
+        /* Add styles for table columns (optional) */
+        table#dashboard-table th {
+            background-color: #333;
+            color: white;
+        }
+        
+        /* Add hover effect for table rows (optional) */
+        table#dashboard-table tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        
+#myInput {
+  background-image: url('/css/searchicon.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+    </style>
+</head>
+<body>
+    <h1>Data Visualization Dashboard</h1>
+
+    <!-- Filter Controls (Add your filter controls here) -->
+    <canvas id="myChart"></canvas>
+
+    <div id="visualization">
+        <!-- Display your visualizations here using JavaScript -->
+        <!-- You can use JavaScript libraries to create interactive charts and graphs -->
+        <!-- Update the visualizations based on user-selected filters -->
+
+        <!-- Example: Create a chart with Chart.js -->
+    </div>
+    
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("dashboard-table");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+        }
+        </script>
+    <div id="data-table">
+        <table id="dashboard-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Intensity</th>
+                    <th>Likelihood</th>
+                    <th>Relevance</th>
+                    <th>Year</th>
+                    <th>Country</th>
+                    <th>Topics</th>
+                    <th>Region</th>
+                    <th>City</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data.qs %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.intensity }}</td>
+                    <td>{{ item.likelihood }}</td>
+                    <td>{{ item.relevance }}</td>
+                    <td>{{ item.year }}</td>
+                    <td>{{ item.country }}</td>
+                    <td>{{ item.topics }}</td>
+                    <td>{{ item.region }}</td>
+                    <td>{{ item.city }}</td>
+                    <td>{{ item.description }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   <script>
+        // Initialize DataTables for the table
+        $(document).ready(function () {
+            $('#dashboard-table').DataTable(
+                {
+        // Add DataTables configuration options here
+        "paging": true, // Enable pagination
+        "ordering": true, // Enable sorting
+        "searching": true, // Enable searching/filtering
+        "searching": true, // Enable searching/filtering
+        "columnDefs": [
+            { "orderable": true, "targets": "_all" } // Enable sorting for all columns
+        ]
+    }
+            );
+        });
+
+        // JavaScript code to create and update visualizations based on the 'data' variable passed from Django view
+        // You should use a JavaScript library like D3.js, Chart.js, etc., to create your visualizations
+
+        // Example: Create a bar chart with Chart.js
+        function createChart(data) {
+            var ctx = document.getElementById('myChart').getContext('2d');
+
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Example Data',
+                        data: data.values, // Use the values from your data variable
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Call the createChart function with your data
+        var data = {
+            labels: ['Label 1', 'Label 2', 'Label 3'],
+            values: [10, 20, 30], // Replace with your data
+        };
+        createChart(data);
+    </script >
+
+
+
+<!-- <script>
+    // Initialize DataTables for the table
+    $(document).ready(function () {
+        var table = $('#dashboard-table').DataTable();
+
+        // Extract data from the table and prepare it for the chart
+        var labels = [];
+        var values = [];
+
+        table.rows().data().each(function (value, index) {
+            labels.push(value[4]); // Assuming 'year' is in the 5th column (index 4)
+            values.push(parseInt(value[1])); // Assuming 'intensity' is in the 2nd column (index 1)
+        });
+
+        // Create the chart using extracted data
+        createChart(labels, values);
+    });
+
+    // JavaScript code to create and update visualizations based on the 'data' variable passed from Django view
+    // You should use a JavaScript library like D3.js, Chart.js, etc., to create your visualizations
+
+    // Example: Create a bar chart with Chart.js
+    function createChart(labels, values) {
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Intensity',
+                    data: values,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script> -->
+
+</body>
+</html>
